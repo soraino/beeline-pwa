@@ -86,7 +86,7 @@
       async initRoutes() {
         const value = await this.$getItem('beelineData');
         if (value != null) {
-          this.routes = value;
+          this.routes = JSON.parse(value);
         } else {
           try {
             const allRoutes = await axios.get(`${this.url}/routes`, {
@@ -98,7 +98,7 @@
               },
             });
             this.routes = allRoutes.data;
-            this.$setItem('beelineData', allRoutes.data, () => {
+            this.$setItem('beelineData', JSON.stringify(allRoutes.data), () => {
               console.log('woots');
             });
           } catch (e) {
