@@ -84,18 +84,26 @@
     },
     methods: {
       async initRoutes() {
-        try {
-          const allRoutes = await axios.get(`${this.url}/routes`, {
-            params: {
-              startDate: Date.now(),
-              includePath: true,
-              includeTrips: true,
-              limitTrips: 5,
-            },
-          });
-          this.routes = allRoutes.data;
-        } catch (e) {
-          console.log(e);
+        const value = await this.$getItem('beelineData');
+        if (value != null) {
+          this.routes = value;
+        } else {
+          try {
+            const allRoutes = await axios.get(`${this.url}/routes`, {
+              params: {
+                startDate: Date.now(),
+                includePath: true,
+                includeTrips: true,
+                limitTrips: 5,
+              },
+            });
+            this.routes = allRoutes.data;
+            this.$setItem('beelineData', allRoutes.data, () => {
+              console.log('woots');
+            });
+          } catch (e) {
+            console.log(e);
+          }
         }
         this.isLoading = false;
       },
